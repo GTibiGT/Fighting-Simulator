@@ -9,18 +9,23 @@ class Program
     {
         Console.WriteLine("Choose a move:");
 
-        foreach (KeyValuePair<int, Dictionary<string, List<int>>> move in player.Moves)
+        foreach (var move in player.Moves)
         {
-            foreach (KeyValuePair<string, List<int>> attack in move.Value)
-            {
-                Console.WriteLine($"{move.Key}. {attack.Key} (Cost: {attack.Value[0]}, Damage: {attack.Value[1]})");
-            }
+            Console.WriteLine($"{move.Key}. {move.Value.Name} (Cost: {move.Value.StaminaCost}, Damage: {move.Value.Damage})");
         }
 
         Console.Write("Choose a number (1-5): ");
         int choice = Convert.ToInt32(Console.ReadLine());
 
         // Perform move
+        Move selectedMove = player.Moves[choice];
+
+        player.Stamina -= selectedMove.StaminaCost;
+        enemy.Health -= selectedMove.Damage;
+
+        Console.WriteLine();
+        Console.WriteLine($"{player.Name} used {selectedMove.Name}!");
+        Console.WriteLine($"{enemy.Name} took {selectedMove.Damage} damage.");
     }
 
     public static void EnemyTurn(Character enemy, Character player)
@@ -30,6 +35,14 @@ class Program
         int choice = rand.Next(1, 6);
 
         // Perform move
+        Move move = enemy.Moves[choice];
+
+        enemy.Stamina -= move.StaminaCost;
+        player.Health -= move.Damage;
+
+        Console.WriteLine();
+        Console.WriteLine($"{enemy.Name} used {move.Name}!");
+        Console.WriteLine($"{player.Name} took {move.Damage} damage.");
     }
 
     static void Main()
@@ -83,12 +96,9 @@ class Program
 
         Console.WriteLine("\nYour moves:");
 
-        foreach (KeyValuePair<int, Dictionary<string, List<int>>> move in p1.Moves)
+        foreach (var move in p1.Moves)
         {
-            foreach (KeyValuePair<string, List<int>> attack in move.Value)
-            {
-                Console.WriteLine($"{move.Key}. {attack.Key} (Cost: {attack.Value[0]}, Damage: {attack.Value[1]})");
-            }
+            Console.WriteLine($"{move.Key}. {move.Value.Name} (Cost: {move.Value.StaminaCost}, Damage: {move.Value.Damage})");
         }
 
         Console.WriteLine("Get ready!");
