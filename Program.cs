@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 using CharacterSelect;
 
 class Program
@@ -21,11 +22,34 @@ class Program
         Move selectedMove = player.Moves[choice];
 
         player.Stamina -= selectedMove.StaminaCost;
-        enemy.Health -= selectedMove.Damage;
+
+        if (selectedMove.Name == "Block"){
+            player.isBlocking = true;
+            Console.WriteLine($"{player.Name} is blocking!");
+            return;
+        }
+
+        int damage = selectedMove.Damage;
+
+        if (enemy.isBlocking)
+        {
+            damage = 0;
+            enemy.isBlocking = false;
+            Console.WriteLine($"{enemy.Name} blocked the attack!");
+        }
+
+        enemy.Health -= damage;
 
         Console.WriteLine();
         Console.WriteLine($"{player.Name} used {selectedMove.Name}!");
         Console.WriteLine($"{enemy.Name} took {selectedMove.Damage} damage.");
+
+        if (player.Stamina <= 0)
+        {
+            Console.WriteLine($"{player.Name} is exhausted and can no longer fight!");
+            Console.WriteLine($"{enemy.Name} wins!");
+            return;
+        }
     }
 
     public static void EnemyTurn(Character enemy, Character player)
@@ -38,11 +62,36 @@ class Program
         Move move = enemy.Moves[choice];
 
         enemy.Stamina -= move.StaminaCost;
-        player.Health -= move.Damage;
+
+        if (move.Name == "Block"){
+            enemy.isBlocking = true;
+            Console.WriteLine($"{enemy.Name} is blocking!");
+            Console.ReadLine();
+            return;
+        }
+
+        int damage = move.Damage;
+
+        if (player.isBlocking)
+        {
+            damage = 0;
+            player.isBlocking = false;
+            Console.WriteLine($"{player.Name} blocked the attack!");
+        }
+
+        player.Health -= damage;
+
 
         Console.WriteLine();
         Console.WriteLine($"{enemy.Name} used {move.Name}!");
         Console.WriteLine($"{player.Name} took {move.Damage} damage.");
+    
+        if (enemy.Stamina <= 0)
+        {
+            Console.WriteLine($"{enemy.Name} is exhausted and can no longer fight!");
+            Console.WriteLine($"{player.Name} wins!");
+            return;
+        }
     }
 
     static void Main()

@@ -5,6 +5,7 @@ namespace CharacterSelect
 {
     public class Character
     {
+        public bool isBlocking {get; set; }
         public static int Random_damage()
         {
             int dmg_chance = Random.Shared.Next(20, 41);
